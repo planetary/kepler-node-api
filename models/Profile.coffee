@@ -1,8 +1,8 @@
-mongoose = require 'mongoose'
+{Schema, model} = require 'mongoose'
 Promise = require 'bluebird'
 
 
-Profile = mongoose.Schema(
+Profile = Schema(
     'name'
         'type': String
         'required': true
@@ -27,7 +27,6 @@ Profile.pre 'save', (next) ->
     next()
 
 
-Model = mongoose.model('Profile', Profile)
+module.exports = Model = model('Profile', Profile)
 Promise.promisifyAll(Model)
 Promise.promisifyAll(Model.prototype)
-module.exports = Model

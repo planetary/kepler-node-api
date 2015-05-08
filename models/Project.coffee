@@ -1,8 +1,8 @@
-mongoose = require 'mongoose'
+{Schema, model} = require 'mongoose'
 Promise = require 'bluebird'
 
 
-Project = mongoose.Schema(
+Project = Schema(
     'name'
         'type': String
         'required': true
@@ -69,7 +69,6 @@ Project.method 'regenerate', ->
     this.key = this.key = uuid.v4().replace('-', '')
 
 
-Model = mongoose.model('Project', Project)
+module.exports = Model = model('Project', Project)
 Promise.promisifyAll(Model)
 Promise.promisifyAll(Model.prototype)
-module.exports = Model

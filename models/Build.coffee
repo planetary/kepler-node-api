@@ -1,11 +1,11 @@
-mongoose = require 'mongoose'
+{Schema, model} = require 'mongoose'
 Promise = require 'bluebird'
 
 
-Build = mongoose.Schema(
+Build = Schema(
     'project':
         # The project this build belongs to
-        'type': mongoose.Schema.Types.ObjectId
+        'type': Schema.Types.ObjectId
         'ref': 'Project'
         'required': true
 
@@ -33,7 +33,6 @@ Build.pre 'save', (next) ->
 Build.index({'project': 1, 'number': 1}, {'unique': true})
 
 
-Model = mongoose.model('Build', Build)
+module.exports = Model = model('Build', Build)
 Promise.promisifyAll(Model)
 Promise.promisifyAll(Model.prototype)
-module.exports = Model
