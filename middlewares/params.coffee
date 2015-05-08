@@ -11,7 +11,7 @@ module.exports = (app) ->
             # builds must be numbers
             return next('route')
 
-        Build.findOne(
+        Build.findOneAsync(
             'project': req.project.id
             'number': value
         )
@@ -28,7 +28,7 @@ module.exports = (app) ->
 
     app.param 'profile', (req, res, next, value) ->
         # populates `app.profile`
-        Profile.findOne(
+        Profile.findOneAsync(
             'name': value
         )
         .then (profile) ->
@@ -43,7 +43,7 @@ module.exports = (app) ->
 
     app.param 'project', (req, res, next, value) ->
         # populates `app.project`
-        Project.findOne(
+        Project.findOneAsync(
             'slug': value
         )
         .then (project) ->
@@ -68,7 +68,7 @@ module.exports = (app) ->
 
         Promise.try ->
             if req.build
-                Screenshot.findOne(
+                Screenshot.findOneAsync(
                     'project': req.project.id
                     'build': req.build.id
                     'slug': value
@@ -81,7 +81,7 @@ module.exports = (app) ->
                     req.screenshot = screenshot
                     next()
             else
-                Screenshot.find(
+                Screenshot.findAsync(
                     'project': req.project.id
                     'slug': value
                 )

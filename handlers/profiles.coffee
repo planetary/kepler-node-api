@@ -6,7 +6,7 @@
 module.exports = (app) ->
     app.post '/api/profiles', (req, res) ->
         # Creates a new profile
-        Profile.create(
+        Profile.createAsync(
             'name': req.body.name
             'width': req.body.width
             'agent': req.body.agent
@@ -32,7 +32,7 @@ module.exports = (app) ->
 
     app.get '/api/profiles', (req, res) ->
         # Returns a list of profiles
-        Profile.find()
+        Profile.findAsync()
         .then (profiles) ->
             res.status(200).send(
                 'code': 'OK'
@@ -49,7 +49,7 @@ module.exports = (app) ->
 
     app.put '/api/profiles/:profile', (req, res) ->
         # Updates an existing profile
-        req.profile.update(
+        req.profile.updateAsync(
             'name': req.body.name
             'width': req.body.width
             'agent': req.body.agent
@@ -76,7 +76,7 @@ module.exports = (app) ->
     app.delete '/api/profiles/:profile', (req, res) ->
         # Deletes a profile. All previously generated screenshots are still
         # available
-        req.profile.remove()
+        req.profile.removeAsync()
         .then ->
             res.status(200).send(
                 'code': 'OK'

@@ -37,7 +37,7 @@ Project.pre 'validate', (next) ->
     base = this.slug = this.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
     trySlug = (model) =>
-        Model.findOne(
+        Model.findOneAsync(
             'slug': this.slug
         )
         .then (project) =>
@@ -65,11 +65,11 @@ Project.pre 'save', (next) ->
 
 Project.pre 'remove', (next) ->
     # Delete all builds before deleting this project
-    Build.find(
+    Build.findAsync(
         'project': this.id
     )
     .then (builds) ->
-        builds.map (build) -> build.remove()
+        builds.map (build) -> build.removeAsync()
     .then -> next()
     .catch (err) -> next(err)
 

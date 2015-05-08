@@ -4,7 +4,7 @@ module.exports = (app) ->
         number = req.project.head++
         req.project.save()
         .then ->
-            Build.create(
+            Build.createAsync(
                 'project': req.project.id
                 'number': number
             )
@@ -28,7 +28,7 @@ module.exports = (app) ->
 
     app.delete '/api/projects/:project/:build', (req, res) ->
         # Deletes a build, together with all of its screenshots
-        req.build.remove()
+        req.build.removeAsync()
         .then ->
             res.status(200).send(
                 'code': 'OK'

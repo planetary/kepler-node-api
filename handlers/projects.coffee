@@ -1,4 +1,3 @@
-{Project} = require '../models'
 {Build, Project} = require '../models'
 
 {Error} = require 'mongoose'
@@ -7,7 +6,7 @@
 module.exports = (app) ->
     app.post '/api/projects', (req, res) ->
         # Creates a new project, returning its slug
-        Project.create(
+        Project.createAsync(
             'name': req.body.name
         )
         .then (project) ->
@@ -31,7 +30,7 @@ module.exports = (app) ->
 
     app.get '/api/projects/:project', (req, res) ->
         # Returns a project's metadata together with all of its builds
-        Build.find(
+        Build.findAsync(
             'project': req.project.id
         )
         .then (builds) ->
@@ -55,7 +54,7 @@ module.exports = (app) ->
     app.put '/api/projects/:project', (req, res) ->
         # Updates an existing project's metadata, returning its slug (usually
         # the same but it might be modified)
-        req.project.update(
+        req.project.updateAsync(
             'name': req.body.name
         )
         .then ->
@@ -80,7 +79,7 @@ module.exports = (app) ->
 
     app.delete '/api/projects/:project', (req, res) ->
         # Deletes a project, together with all of its builds and screenshots
-        req.project.remove()
+        req.project.removeAsync()
         .then ->
             res.status(200).send(
                 'code': 'OK'

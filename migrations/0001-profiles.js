@@ -10,7 +10,7 @@ mongoose.connect( config.mongo.uri, config.mongo.options );
 
 
 exports.up = function(next) {
-    models.Profile.create([
+    models.Profile.createAsync([
         {
             'name': 'default'
         }, {
@@ -69,7 +69,7 @@ exports.up = function(next) {
 };
 
 exports.down = function(next) {
-    models.Profile.remove({})
+    models.Profile.removeAsync({})
     .then( function() { next(); } )
     .catch( console.error.bind( console ) );
 };
