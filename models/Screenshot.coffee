@@ -77,13 +77,14 @@ Screenshot = mongoose.Schema(
         'type': Number
         'required': true
 
-    'url':
+    'slug':
+        # The name of this group of screenshots; if not set by the user, the
+        # sha1 of the URL will be used
         'type': String
         'required': true
 
-    'name':
-        # The name of this group of screenshots; if not set by the user, the
-        # sha1 of the URL will be used
+    'url':
+        # The URL of the page that is rendered in this group of screenshots
         'type': String
         'required': true
 
@@ -105,8 +106,7 @@ Screenshot.pre 'save', (next) ->
     next()
 
 
-Screenshot.index({'project': 1, 'build': 1, 'name': 1}, {'unique': true})
-Screenshot.index({'project': 1, 'name': 1})
+Screenshot.index({'project': 1, 'slug': 1, 'build': 1}, {'unique': true})
 
 
 Model = mongoose.model('Screenshot', Screenshot)
