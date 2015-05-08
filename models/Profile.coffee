@@ -18,9 +18,9 @@ Profile = mongoose.Schema({
 
 
 Profile.pre 'save', (next) ->
-    this.updatedAt = new Date()
-    if this.isNew
-        this.createdAt = this.updatedAt
+    @updatedAt = new Date()
+    if @isNew
+        @createdAt = @updatedAt
     next()
 
 

@@ -34,20 +34,20 @@ Project = mongoose.Schema({
 
 
 Project.pre 'validate', (next) ->
-    if this.isNew
-        this.regenerate()
+    if @isNew
+        @regenerate()
 
-    base = this.slug = this.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    base = @slug = @name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
     trySlug = (model) =>
         Model.findOneAsync(
-            'slug': this.slug
+            'slug': @slug
         )
         .then (project) =>
-            if project and project.id isnt this.id
+            if project and project.id isnt @id
                 # already exists; generate a new suffix
                 rand = Math.floor(65536 * Math.random())
-                this.slug = base + '-' + rand.toString(16)
+                @slug = base + '-' + rand.toString(16)
                 trySlug()
     trySlug()
     .then -> next()
@@ -56,20 +56,20 @@ Project.pre 'validate', (next) ->
 
 Project.method 'regenerate', ->
     # generates a new API key
-    this.key = this.key = uuid.v4().replace(/-/g, '')
+    @key = @key = uuid.v4().replace(/-/g, '')
 
 
 Project.pre 'save', (next) ->
-    this.updatedAt = new Date()
-    if this.isNew
-        this.createdAt = this.updatedAt
+    @updatedAt = new Date()
+    if @isNew
+        @createdAt = @updatedAt
     next()
 
 
 Project.pre 'remove', (next) ->
     # Delete all builds before deleting this project
     Build.findAsync(
-        'project': this.id
+        'project': @id
     )
     .then (builds) ->
         build.removeAsync() for build in builds

@@ -25,17 +25,17 @@ Build = mongoose.Schema({
 
 
 Build.pre 'save', (next) ->
-    this.updatedAt = new Date()
-    if this.isNew
-        this.createdAt = this.updatedAt
+    @updatedAt = new Date()
+    if @isNew
+        @createdAt = @updatedAt
     next()
 
 
 Build.pre 'remove', (next) ->
     # Delete all screenshots before deleting this build
     Screenshot.findAsync(
-        'project': this.project
-        'build': this.number
+        'project': @project
+        'build': @number
     )
     .then (screenshots) ->
         shot.removeAsync() for shot in screenshots
