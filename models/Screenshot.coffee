@@ -1,8 +1,8 @@
-{Schema, model} = require 'mongoose'
+mongoose = require 'mongoose'
 Promise = require 'bluebird'
 
 
-ScreenshotVersion = Schema(
+ScreenshotVersion = mongoose.Schema({
     'id':
         # Either the name of the profile, or the sha1 hash of
         # viewport + agent
@@ -62,13 +62,13 @@ ScreenshotVersion = Schema(
         'min': 0,
         'max': 100
         'default': 60
-)
+})
 
 
-Screenshot = Schema(
+Screenshot = mongoose.Schema({
     'project':
         # The project this build belongs to
-        'type': Schema.Types.ObjectId
+        'type': mongoose.Schema.Types.ObjectId
         'ref': 'Project'
         'required': true
 
@@ -88,7 +88,7 @@ Screenshot = Schema(
         'type': String
         'required': true
 
-    'versions': [Screenshot]
+    'versions': [ScreenshotVersion]
 
     'createdAt':
         'type': Date
@@ -97,7 +97,7 @@ Screenshot = Schema(
     'updatedAt':
         'type': Date
         'default': -> new Date()
-)
+})
 
 
 Screenshot.pre 'save', (next) ->
@@ -109,6 +109,6 @@ Screenshot.pre 'save', (next) ->
 Screenshot.index({'project': 1, 'slug': 1, 'build': 1}, {'unique': true})
 
 
-module.exports = Model = model('Screenshot', Screenshot)
+module.exports = Model = mongoose.model('Screenshot', Screenshot)
 Promise.promisifyAll(Model)
 Promise.promisifyAll(Model.prototype)

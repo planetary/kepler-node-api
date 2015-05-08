@@ -1,9 +1,9 @@
-{Schema, model} = require 'mongoose'
+mongoose = require 'mongoose'
 Promise = require 'bluebird'
 
 
-Project = Schema(
-    'name'
+Project = mongoose.Schema({
+    'name':
         'type': String
         'required': true
 
@@ -29,7 +29,7 @@ Project = Schema(
     'updatedAt':
         'type': Date
         'default': -> new Date()
-)
+})
 
 
 Project.pre 'save', (next) ->
@@ -69,6 +69,6 @@ Project.method 'regenerate', ->
     this.key = this.key = uuid.v4().replace('-', '')
 
 
-module.exports = Model = model('Project', Project)
+module.exports = Model = mongoose.model('Project', Project)
 Promise.promisifyAll(Model)
 Promise.promisifyAll(Model.prototype)

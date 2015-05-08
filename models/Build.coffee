@@ -1,15 +1,15 @@
-{Schema, model} = require 'mongoose'
+mongoose = require 'mongoose'
 Promise = require 'bluebird'
 
 
-Build = Schema(
+Build = mongoose.Schema({
     'project':
         # The project this build belongs to
-        'type': Schema.Types.ObjectId
+        'type': mongoose.Schema.Types.ObjectId
         'ref': 'Project'
         'required': true
 
-    'number'
+    'number':
         # The build number (auto-incrementing)
         'type': Number
         'required': true
@@ -21,7 +21,7 @@ Build = Schema(
     'updatedAt':
         'type': Date
         'default': -> new Date()
-)
+})
 
 
 Build.pre 'save', (next) ->
@@ -33,6 +33,6 @@ Build.pre 'save', (next) ->
 Build.index({'project': 1, 'number': 1}, {'unique': true})
 
 
-module.exports = Model = model('Build', Build)
+module.exports = Model = mongoose.model('Build', Build)
 Promise.promisifyAll(Model)
 Promise.promisifyAll(Model.prototype)

@@ -15,13 +15,13 @@ update = (file) ->
     # updates the symbol table by including those from `file`
     module = require("./" + file)
 
-    if typeof module:: is 'undefined'
+    if typeof(module::) is 'undefined'
         # assume a dictionary was exported and shallow-copy all properties
         for prop of module
             symbols[prop] = module[prop]
     else
         # assume a function or a class was exported and bind it to `modulename`
-        symbols[file] = sub
+        symbols[file] = module
 
 
 for file in fs.readdirSync(__dirname)

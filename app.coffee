@@ -17,4 +17,6 @@ mongoose.connection.once 'open', ->
     require('./handlers')(app)
 
     # start server
-    app.listen(config.server.port)
+    app.listen config.server.port, ->
+        console.log("Server started on #{config.server.port}. To stop, hit
+                     Ctrl + C")

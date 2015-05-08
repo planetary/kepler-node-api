@@ -66,32 +66,32 @@ module.exports = (app) ->
             # least one non-alphanumeric character
             return next('route')
 
-        if req.build
-            Screenshot.findOne(
-                'project': req.project.id
-                'build': req.build.id
-                'slug': value
-            )
-            .then (screenshot) ->
-                if not screenshot
-                    throw new Error("No such screenshot in #{req.project.name}/
-                                    #{req.build.number}: #{value}")
-                req.screenshot = screenshot
-                next()
-            .catch (err) ->
-                console.error(err)
-                next('route')
-        else
-            Screenshot.find(
-                'project': req.project.id
-                'slug': value
-            )
-            .then (screenshots) ->
-                if not screenshots
-                    throw new Error("No such screenshot in #{req.project.name}/
-                                    #{req.build.number}: #{value}")
-                req.screenshots = screenshots
-                next()
-            .catch (err) ->
-                console.error(err)
-                next('route')
+        Promise.try ->
+            if req.build
+                Screenshot.findOne(
+                    'project': req.project.id
+                    'build': req.build.id
+                    'slug': value
+                )
+                .then (screenshot) ->
+                    if not screenshot
+                        throw new Error("No such screenshot in
+                                         #{req.project.name} /
+                                         #{req.build.number}: #{value}")
+                    req.screenshot = screenshot
+                    next()
+            else
+                Screenshot.find(
+                    'project': req.project.id
+                    'slug': value
+                )
+                .then (screenshots) ->
+                    if not screenshots
+                        throw new Error("No such screenshot in
+                                         #{req.project.name} /
+                                         #{req.build.number}: #{value}")
+                    req.screenshots = screenshots
+                    next()
+        .catch (err) ->
+            console.error(err)
+            next('route')
