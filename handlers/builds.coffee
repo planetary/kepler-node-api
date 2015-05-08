@@ -2,7 +2,7 @@ module.exports = (app) ->
     app.post '/api/projects/:project', (req, res) ->
         # Creates a new build in a project
         number = req.project.head++
-        req.project.save()
+        req.project.saveAsync()
         .then ->
             Build.createAsync(
                 'project': req.project.id
