@@ -1,3 +1,6 @@
+{Error} = require 'mongoose'
+
+
 module.exports = (app) ->
     app.post '/api/projects/:project', (req, res) ->
         # Creates a new build in a project
@@ -13,6 +16,12 @@ module.exports = (app) ->
                 'code': 'OK'
                 'message': 'Created'
                 'data': number
+            )
+        .catch Error.ValidationError, (err) ->
+            res.status(400).send(
+                'code': 'VALIDATION'
+                'message': err.message
+                'data': err.errors
             )
         .catch (err) ->
             console.error(err)
