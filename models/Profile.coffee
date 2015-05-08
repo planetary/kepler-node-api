@@ -19,4 +19,10 @@ Profile = mongoose.Schema(
 )
 
 
+Profile.pre 'save', (next) ->
+    if not this.isNew
+        this.updatedAt = new Date()
+    next()
+
+
 module.exports = mongoose.model('Profile', Profile)

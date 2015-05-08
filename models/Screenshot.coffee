@@ -98,6 +98,12 @@ Screenshot = mongoose.Schema(
 )
 
 
+Screenshot.pre 'save', (next) ->
+    if not this.isNew
+        this.updatedAt = new Date()
+    next()
+
+
 Screenshot.index({'project': 1, 'build': 1, 'name': 1}, {'unique': true})
 Screenshot.index({'project': 1, 'name': 1})
 

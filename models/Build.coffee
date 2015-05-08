@@ -23,6 +23,12 @@ Build = mongoose.Schema(
 )
 
 
+Build.pre 'save', (next) ->
+    if not this.isNew
+        this.updatedAt = new Date()
+    next()
+
+
 Build.index({'project': 1, 'number': 1}, {'unique': true})
 
 
