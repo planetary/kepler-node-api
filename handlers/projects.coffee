@@ -1,5 +1,6 @@
-{Build, Project} = require '../models'
+{Build, Project, Screenshot} = require '../models'
 
+Promise = require 'bluebird'
 {Error} = require 'mongoose'
 
 
@@ -8,6 +9,7 @@ module.exports = (app) ->
         # Creates a new project, returning its slug
         Project.createAsync(
             'name': req.body.name
+            'meta': req.body.meta
         )
         .then (project) ->
             res.status(201).send(
@@ -29,18 +31,27 @@ module.exports = (app) ->
 
 
     app.get '/api/projects/:project', (req, res) ->
-        # Returns a project's metadata together with all of its builds
-        Build.findAsync(
-            'project': req.project.id
-        )
-        .then (builds) ->
+        # Returns a project's metadata together with a list of all builds and
+        # available screenshots
+        Promise.try -> [
+            Build.findAsync(
+                'project': req.project.id
+            )
+            Screenshot.findAsync(
+                'project': req.project.id
+            )
+        ]
+        .spread (builds, screenshots) ->
             res.status(200).send(
                 'code': 'OK'
                 'message': 'Success'
                 'data':
                     'name': req.project.name
-                    'builds': builds
-                    'createAt': req.project.createdAt
+                    'meta': req.project.meta
+                    'head': req.project.head
+                    'builds': builds.map (build) -> build.number
+                    'screenshots': screenshots.map (shot) -> shot.name
+                    'createdAt': req.project.createdAt
                     'updatedAt': req.project.updatedAt
             )
         .catch (err) ->
@@ -56,12 +67,12 @@ module.exports = (app) ->
         # the same but it might be modified)
         req.project.updateAsync(
             'name': req.body.name
+            'meta': req.body.meta
         )
         .then ->
             res.status(200).send(
                 'code': 'OK'
-                'message': 'Success'
-                'data': req.project.slug
+                'message': 'Saved'
             )
         .catch Error.ValidationError, (err) ->
             res.status(400).send(

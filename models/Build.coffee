@@ -16,6 +16,9 @@ Build = mongoose.Schema({
         'type': Number
         'required': true
 
+    # api specified metadata, if any
+    'meta': mongoose.Schema.Types.Mixed
+
     'createdAt': Date
     'updatedAt': Date
 })

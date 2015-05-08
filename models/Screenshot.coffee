@@ -89,7 +89,11 @@ Screenshot = mongoose.Schema({
         'type': String
         'required': true
 
+    # All the versions available for this screenshot
     'versions': [ScreenshotVersion]
+
+    # api specified metadata, if any
+    'meta': mongoose.Schema.Types.Mixed
 
     'createdAt': Date
     'updatedAt': Date

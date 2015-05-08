@@ -57,7 +57,7 @@ module.exports = (app) ->
         .then ->
             res.status(200).send(
                 'code': 'OK'
-                'message': 'Success'
+                'message': 'Saved'
             )
         .catch Error.ValidationError, (err) ->
             res.status(400).send(
@@ -80,7 +80,7 @@ module.exports = (app) ->
         .then ->
             res.status(200).send(
                 'code': 'OK'
-                'message': 'Success'
+                'message': 'Deleted'
             )
         .catch (err) ->
             console.error(err)
