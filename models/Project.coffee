@@ -35,7 +35,38 @@ Project = mongoose.Schema(
 Project.pre 'save', (next) ->
     if not this.isNew
         this.updatedAt = new Date()
-    next()
+        this.regenerate()
+
+    base = this.slug = this.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+
+    trySlug = (model) =>
+        Model.findOne(
+            'slug': this.slug
+        )
+        .then (project) =>
+            if project and project.id isnt this.id
+                # already exists; generate a new suffix
+                rand = Math.floor(65536 * Math.random())
+                this.slug = base + '-' + rand.toString(16)
+                trySlug()
+    trySlug()
+    .then -> next()
+    .catch (err) -> next(err)
+
+
+Project.pre 'remove', (next) ->
+    Build.find(
+        'project': req.project.id
+    )
+    .then (builds) ->
+        builds.map (build) -> build.remove()
+    .then -> next()
+    .catch (err) -> next(err)
+
+
+Project.method 'regenerate', ->
+    # generates a new API key
+    this.key = this.key = uuid.v4().replace('-', '')
 
 
 Model = mongoose.model('Project', Project)
