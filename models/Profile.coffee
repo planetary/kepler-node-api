@@ -6,6 +6,7 @@ Profile = mongoose.Schema(
     'name'
         'type': String
         'required': true
+        'unique': true
 
     'width': Number
     'agent': String
