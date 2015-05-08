@@ -1,5 +1,6 @@
+assimilate = require '../services/assimilate'
+
 mongoose = require 'mongoose'
-Promise = require 'bluebird'
 
 
 Profile = mongoose.Schema({
@@ -27,6 +28,4 @@ Profile.pre 'save', (next) ->
     next()
 
 
-module.exports = Model = mongoose.model('Profile', Profile)
-Promise.promisifyAll(Model)
-Promise.promisifyAll(Model.prototype)
+module.exports = Model = assimilate mongoose.model('Profile', Profile)

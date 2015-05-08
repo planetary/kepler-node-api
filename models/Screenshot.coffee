@@ -1,5 +1,6 @@
+assimilate = require '../services/assimilate'
+
 mongoose = require 'mongoose'
-Promise = require 'bluebird'
 
 
 ScreenshotVersion = mongoose.Schema({
@@ -109,6 +110,4 @@ Screenshot.pre 'save', (next) ->
 Screenshot.index({'project': 1, 'slug': 1, 'build': 1}, {'unique': true})
 
 
-module.exports = Model = mongoose.model('Screenshot', Screenshot)
-Promise.promisifyAll(Model)
-Promise.promisifyAll(Model.prototype)
+module.exports = Model = assimilate mongoose.model('Screenshot', Screenshot)

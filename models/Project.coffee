@@ -1,5 +1,6 @@
+assimilate = require '../services/assimilate'
+
 mongoose = require 'mongoose'
-Promise = require 'bluebird'
 
 
 Project = mongoose.Schema({
@@ -69,6 +70,4 @@ Project.method 'regenerate', ->
     this.key = this.key = uuid.v4().replace('-', '')
 
 
-module.exports = Model = mongoose.model('Project', Project)
-Promise.promisifyAll(Model)
-Promise.promisifyAll(Model.prototype)
+module.exports = Model = assimilate mongoose.model('Project', Project)

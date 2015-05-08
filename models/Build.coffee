@@ -1,5 +1,6 @@
+assimilate = require '../services/assimilate'
+
 mongoose = require 'mongoose'
-Promise = require 'bluebird'
 
 
 Build = mongoose.Schema({
@@ -33,6 +34,4 @@ Build.pre 'save', (next) ->
 Build.index({'project': 1, 'number': 1}, {'unique': true})
 
 
-module.exports = Model = mongoose.model('Build', Build)
-Promise.promisifyAll(Model)
-Promise.promisifyAll(Model.prototype)
+module.exports = Model = assimilate mongoose.model('Build', Build)
