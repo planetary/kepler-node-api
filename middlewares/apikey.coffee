@@ -1,14 +1,16 @@
 module.exports = (app) ->
     app.use '/api/projects/:project', (req, res, next) ->
-        # only allows requests that set the `apikey` parameter
-        key = req.get('X-API-Key')
-
+        # only allows non-safe requests that set the `X-API-Key` header
         if not req.project
             return res.status(404).send(
                 'code': 'PROJECT_NOT_FOUND'
                 'message': 'No such project exists'
             )
 
+        if req.method in ['get', 'head']
+            return next()
+
+        key = req.get('X-API-Key')
         if not key
             return res.status(403).send(
                 'code': 'KEY_REQUIRED'
@@ -21,3 +23,5 @@ module.exports = (app) ->
                 'code': 'INVALID_KEY'
                 'message': 'Your API key is incorrect.'
             )
+
+        next()
