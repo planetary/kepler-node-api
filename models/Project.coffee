@@ -1,4 +1,5 @@
 mongoose = require 'mongoose'
+Promise = require 'bluebird'
 
 
 Project = mongoose.Schema(
@@ -37,4 +38,7 @@ Project.pre 'save', (next) ->
     next()
 
 
-module.exports = mongoose.model('Project', Project)
+Model = mongoose.model('Project', Project)
+Promise.promisifyAll(Model)
+Promise.promisifyAll(Model.prototype)
+module.exports = Model

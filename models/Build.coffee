@@ -1,4 +1,5 @@
 mongoose = require 'mongoose'
+Promise = require 'bluebird'
 
 
 Build = mongoose.Schema(
@@ -32,4 +33,7 @@ Build.pre 'save', (next) ->
 Build.index({'project': 1, 'number': 1}, {'unique': true})
 
 
-module.exports = mongoose.model('Build', Build)
+Model = mongoose.model('Build', Build)
+Promise.promisifyAll(Model)
+Promise.promisifyAll(Model.prototype)
+module.exports = Model

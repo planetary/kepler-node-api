@@ -1,4 +1,5 @@
 mongoose = require 'mongoose'
+Promise = require 'bluebird'
 
 
 ScreenshotVersion = mongoose.Schema(
@@ -108,4 +109,7 @@ Screenshot.index({'project': 1, 'build': 1, 'name': 1}, {'unique': true})
 Screenshot.index({'project': 1, 'name': 1})
 
 
-module.exports = mongoose.model('Screenshot', Screenshot)
+Model = mongoose.model('Screenshot', Screenshot)
+Promise.promisifyAll(Model)
+Promise.promisifyAll(Model.prototype)
+module.exports = Model
