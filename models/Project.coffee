@@ -72,9 +72,11 @@ Project.pre 'remove', (next) ->
         'project': this.id
     )
     .then (builds) ->
-        builds.map (build) -> build.removeAsync()
-    .then -> next()
-    .catch (err) -> next(err)
+        build.removeAsync() for build in builds
+    .then ->
+        next()
+    .catch (err) ->
+        next(err)
 
 
 module.exports = Model = assimilate mongoose.model('Project', Project)

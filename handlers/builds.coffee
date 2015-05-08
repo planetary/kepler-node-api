@@ -47,7 +47,7 @@ module.exports = (app) ->
                 'message': 'Success'
                 'data':
                     'meta': req.build.meta
-                    'screenshots': screenshots.map (shot) -> shot.slug
+                    'screenshots': shot.slug for shot in screenshots
                     'createdAt': req.build.createdAt
                     'updatedAt': req.build.updatedAt
             )

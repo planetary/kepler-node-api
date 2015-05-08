@@ -38,9 +38,11 @@ Build.pre 'remove', (next) ->
         'build': this.number
     )
     .then (screenshots) ->
-        screenshots.map (screenshot) -> screenshot.removeAsync()
-    .then -> next()
-    .catch (err) -> next(err)
+        shot.removeAsync() for shot in screenshots
+    .then ->
+        next()
+    .catch (err) ->
+        next(err)
 
 
 Build.index({'project': 1, 'number': 1}, {'unique': true})

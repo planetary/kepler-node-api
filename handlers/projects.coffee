@@ -49,8 +49,8 @@ module.exports = (app) ->
                     'name': req.project.name
                     'meta': req.project.meta
                     'head': req.project.head
-                    'builds': builds.map (build) -> build.number
-                    'screenshots': screenshots.map (shot) -> shot.name
+                    'builds': build.number for build in builds
+                    'screenshots': shot.name for shot in screenshots
                     'createdAt': req.project.createdAt
                     'updatedAt': req.project.updatedAt
             )
