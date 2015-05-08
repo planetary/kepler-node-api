@@ -1,8 +1,12 @@
-require('coffee-script');
+require('coffee-script/register');
+
+var config = require( '../config' ),
+    models = require( '../models' ),
+
+    mongoose = require( 'mongoose' );
 
 
-var Promise = require('bluebird'),
-    models = require('../models');
+mongoose.connect( config.mongo.uri, config.mongo.options );
 
 
 exports.up = function(next) {
@@ -60,9 +64,12 @@ exports.up = function(next) {
             'agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B179 Safari/7534.48.3'
         }
     ])
-    .then( function() { next(); } );
+    .then( function( models ) { next(); } )
+    .catch( console.error.bind( console ) );
 };
 
 exports.down = function(next) {
-    next();
+    models.Profile.remove({})
+    .then( function() { next(); } )
+    .catch( console.error.bind( console ) );
 };
