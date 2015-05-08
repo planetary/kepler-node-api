@@ -5,16 +5,17 @@
 
 module.exports = (app) ->
     app.post '/api/projects', (req, res) ->
-        # Creates a new project
+        # Creates a new project, returning its slug
         data = req.params.all()
         Project.create(
             'name': data.name
             'meta': data.meta
         )
-        .then ->
+        .then (project) ->
             res.status(201).send(
                 'code': 'OK'
                 'message': 'Created'
+                'data': project.slug
             )
         .catch ValidationError, (err) ->
             req.status(400).send(
@@ -53,7 +54,8 @@ module.exports = (app) ->
 
 
     app.put '/projects/:project', (req, res) ->
-        # Updates an existing project's metadata
+        # Updates an existing project's metadata, returning its slug (usually
+        # the same but it might be modified)
         data = req.params.all()
         req.project.update(
             'name': data.name
@@ -63,6 +65,7 @@ module.exports = (app) ->
             res.status(200).send(
                 'code': 'OK'
                 'message': 'Success'
+                'data': req.project.slug
             )
         .catch ValidationError, (err) ->
             req.status(400).send(
@@ -84,7 +87,7 @@ module.exports = (app) ->
         .then ->
             res.status(200).send(
                 'code': 'OK'
-                'message': 'Success'
+                'message': 'Deleted'
             )
         .catch (err) ->
             console.error(err)
