@@ -1,0 +1,16 @@
+{
+    "name": "Kepler",
+    "version": "0.0.1",
+    "description": "Screenshot service",
+    "author": "Radu Dan <dan@planetary.io>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/planetary/kepler"
+    },
+    "bugs": {
+        "url": "https://github.com/planetary/kepler/issues"
+    },
+    "dependencies": {
+    },
+    "license": "MIT"
+}

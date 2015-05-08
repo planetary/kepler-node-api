@@ -1,0 +1,11 @@
+# migrate files
+.migrate
+.migrate-development
+
+# node libraries
+node_modules
+
+# OS noise
+.DS_Store
+Thumbs.db
+profile
