@@ -1,6 +1,7 @@
 assimilate = require '../services/assimilate'
 
 mongoose = require 'mongoose'
+uuid = require 'uuid'
 
 
 Project = mongoose.Schema({
@@ -23,19 +24,13 @@ Project = mongoose.Schema({
         'type': Number
         'default': 0
 
-    'createdAt':
-        'type': Date
-        'default': -> new Date()
-
-    'updatedAt':
-        'type': Date
-        'default': -> new Date()
+    'createdAt': Date
+    'updatedAt': Date
 })
 
 
-Project.pre 'save', (next) ->
-    if not this.isNew
-        this.updatedAt = new Date()
+Project.pre 'validate', (next) ->
+    if this.isNew
         this.regenerate()
 
     base = this.slug = this.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
@@ -53,6 +48,13 @@ Project.pre 'save', (next) ->
     trySlug()
     .then -> next()
     .catch (err) -> next(err)
+
+
+Project.pre 'save', (next) ->
+    this.updatedAt = new Date()
+    if this.isNew
+        this.createdAt = this.updatedAt
+    next()
 
 
 Project.pre 'remove', (next) ->

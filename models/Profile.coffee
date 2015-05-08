@@ -12,19 +12,15 @@ Profile = mongoose.Schema({
     'width': Number
     'agent': String
 
-    'createdAt':
-        'type': Date
-        'default': -> new Date()
-
-    'updatedAt':
-        'type': Date
-        'default': -> new Date()
+    'createdAt': Date
+    'updatedAt': Date
 })
 
 
 Profile.pre 'save', (next) ->
-    if not this.isNew
-        this.updatedAt = new Date()
+    this.updatedAt = new Date()
+    if this.isNew
+        this.createdAt = this.updatedAt
     next()
 
 
