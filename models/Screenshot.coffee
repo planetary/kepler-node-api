@@ -1,4 +1,5 @@
 assimilate = require '../services/assimilate'
+config = require '../config'
 
 mongoose = require 'mongoose'
 
@@ -53,16 +54,6 @@ ScreenshotVersion = mongoose.Schema({
         'required': true
         'enum': ['png', 'gif', 'jpeg']
         'default': 'png'
-
-    'quality':
-        # The compression quality of this screenshot. Actual meaning depends on
-        # the format: for PNG and GIF it specifies the zlib compression level,
-        # whereas for JPEG it specifies the image quantization factor
-        'type': String
-        'required': true
-        'min': 0,
-        'max': 100
-        'default': 60
 })
 
 
@@ -98,6 +89,14 @@ Screenshot = mongoose.Schema({
     'createdAt': Date
     'updatedAt': Date
 })
+
+
+Screenshot.method 'serve', (version) ->
+    if typeof(version) is 'object'
+        version = version.id
+    project = if typeof(@project) is 'object' then @project.id else @project
+    "https://#{config.aws.bucket}.s3.amazonaws.com/#{project}-#{@build}-
+    #{@slug}-#{version}"
 
 
 Screenshot.pre 'save', (next) ->

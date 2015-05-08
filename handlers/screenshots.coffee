@@ -67,8 +67,7 @@ module.exports = (app) ->
                         'height': version.height
                         'size': version.size
                         'format': version.format
-                        'quality': version.quality
-                        'url': null
+                        'url': req.screenshot.serve(version)
                 )
 
         # version not found in this build
