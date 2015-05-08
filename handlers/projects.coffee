@@ -1,3 +1,8 @@
+{Project} = require '../models'
+
+{ValidationError} = require 'mongoose'
+
+
 module.exports = (app) ->
     app.post '/api/projects', (req, res) ->
         # Creates a new project
@@ -6,15 +11,21 @@ module.exports = (app) ->
             'name': data.name
             'meta': data.meta
         )
-        .then (project) ->
-            res.status(200).send(
+        .then ->
+            res.status(201).send(
                 'code': 'OK'
-                'message': 'Success'
+                'message': 'Created'
+            )
+        .catch ValidationError, (err) ->
+            req.status(400).send(
+                'code': 'VALIDATION'
+                'message': 'Invalid field(s)'
+                'data': err
             )
         .catch (err) ->
             console.error(err)
             req.status(500).send(
-                'code': 'INTERNAL',
+                'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
 
@@ -36,7 +47,7 @@ module.exports = (app) ->
         .catch (err) ->
             console.error(err)
             req.status(500).send(
-                'code': 'INTERNAL',
+                'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
 
@@ -48,24 +59,29 @@ module.exports = (app) ->
             'name': data.name
             'meta': data.meta
         )
-        .then (project) ->
+        .then ->
             res.status(200).send(
                 'code': 'OK'
                 'message': 'Success'
             )
+        .catch ValidationError, (err) ->
+            req.status(400).send(
+                'code': 'VALIDATION'
+                'message': 'Invalid field(s)'
+                'data': err
+            )
         .catch (err) ->
             console.error(err)
             req.status(500).send(
-                'code': 'INTERNAL',
+                'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
 
 
     app.delete '/projects/:project', (req, res) ->
         # Deletes a project, together with all of its builds and screenshots
-        data = req.params.all()
         req.project.remove()
-        .then (project) ->
+        .then ->
             res.status(200).send(
                 'code': 'OK'
                 'message': 'Success'
@@ -73,6 +89,6 @@ module.exports = (app) ->
         .catch (err) ->
             console.error(err)
             req.status(500).send(
-                'code': 'INTERNAL',
+                'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
