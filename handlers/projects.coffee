@@ -1,15 +1,13 @@
 {Project} = require '../models'
 
-{ValidationError} = require 'mongoose'
+{Error} = require 'mongoose'
 
 
 module.exports = (app) ->
     app.post '/api/projects', (req, res) ->
         # Creates a new project, returning its slug
-        data = req.params.all()
         Project.create(
-            'name': data.name
-            'meta': data.meta
+            'name': req.body.name
         )
         .then (project) ->
             res.status(201).send(
@@ -17,15 +15,14 @@ module.exports = (app) ->
                 'message': 'Created'
                 'data': project.slug
             )
-        .catch ValidationError, (err) ->
-            req.status(400).send(
+        .catch Error.ValidationError, (err) ->
+            res.status(400).send(
                 'code': 'VALIDATION'
-                'message': 'Invalid field(s)'
-                'data': err
+                'message': err.message
+                'data': err.errors
             )
         .catch (err) ->
-            console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
@@ -42,12 +39,11 @@ module.exports = (app) ->
                 'message': 'Success'
                 'data':
                     'name': req.project.name
-                    'meta': req.project.meta
                     'builds': builds
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
@@ -56,10 +52,8 @@ module.exports = (app) ->
     app.put '/projects/:project', (req, res) ->
         # Updates an existing project's metadata, returning its slug (usually
         # the same but it might be modified)
-        data = req.params.all()
         req.project.update(
-            'name': data.name
-            'meta': data.meta
+            'name': req.body.name
         )
         .then ->
             res.status(200).send(
@@ -67,15 +61,15 @@ module.exports = (app) ->
                 'message': 'Success'
                 'data': req.project.slug
             )
-        .catch ValidationError, (err) ->
-            req.status(400).send(
+        .catch Error.ValidationError, (err) ->
+            res.status(400).send(
                 'code': 'VALIDATION'
-                'message': 'Invalid field(s)'
-                'data': err
+                'message': err.message
+                'data': err.errors
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
@@ -91,7 +85,7 @@ module.exports = (app) ->
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )

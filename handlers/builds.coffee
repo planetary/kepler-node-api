@@ -16,7 +16,7 @@ module.exports = (app) ->
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
@@ -36,7 +36,7 @@ module.exports = (app) ->
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )

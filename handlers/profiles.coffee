@@ -1,31 +1,30 @@
 {Profile} = require '../models'
 
-{ValidationError} = require 'mongoose'
+{Error} = require 'mongoose'
 
 
 module.exports = (app) ->
     app.post '/api/profiles', (req, res) ->
         # Creates a new profile
-        data = req.params.all()
         Profile.create(
-            'name': data.name
-            'width': data.width
-            'agent': data.agent
+            'name': req.body.name
+            'width': req.body.width
+            'agent': req.body.agent
         )
         .then ->
             res.status(201).send(
                 'code': 'OK'
                 'message': 'Created'
             )
-        .catch ValidationError, (err) ->
-            req.status(400).send(
+        .catch Error.ValidationError, (err) ->
+            res.status(400).send(
                 'code': 'VALIDATION'
-                'message': 'Invalid field(s)'
-                'data': err
+                'message': err.message
+                'data': err.errors
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
@@ -42,7 +41,7 @@ module.exports = (app) ->
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
@@ -50,26 +49,25 @@ module.exports = (app) ->
 
     app.put '/api/profiles/:profile', (req, res) ->
         # Updates an existing profile
-        data = req.params.all()
         req.profile.update(
-            'name': data.name
-            'width': data.width
-            'agent': data.agent
+            'name': req.body.name
+            'width': req.body.width
+            'agent': req.body.agent
         )
         .then ->
             res.status(200).send(
                 'code': 'OK'
                 'message': 'Success'
             )
-        .catch ValidationError, (err) ->
-            req.status(400).send(
+        .catch Error.ValidationError, (err) ->
+            res.status(400).send(
                 'code': 'VALIDATION'
-                'message': 'Invalid field(s)'
-                'data': err
+                'message': err.message
+                'data': err.errors
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
@@ -86,7 +84,7 @@ module.exports = (app) ->
             )
         .catch (err) ->
             console.error(err)
-            req.status(500).send(
+            res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
             )
