@@ -1,4 +1,5 @@
 assimilate = require '../services/assimilate'
+Screenshot = require './Screenshot'
 
 mongoose = require 'mongoose'
 
@@ -25,6 +26,18 @@ Build.pre 'save', (next) ->
     if this.isNew
         this.createdAt = this.updatedAt
     next()
+
+
+Build.pre 'remove', (next) ->
+    # Delete all screenshots before deleting this build
+    Screenshot.findAsync(
+        'project': this.project
+        'build': this.number
+    )
+    .then (screenshots) ->
+        screenshots.map (screenshot) -> screenshot.removeAsync()
+    .then -> next()
+    .catch (err) -> next(err)
 
 
 Build.index({'project': 1, 'number': 1}, {'unique': true})
