@@ -7,7 +7,7 @@ module.exports = (app) ->
                 'message': 'No such project exists'
             )
 
-        if req.method in ['get', 'head']
+        if req.method in ['GET', 'HEAD']
             return next()
 
         key = req.get('X-API-Key')

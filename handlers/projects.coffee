@@ -1,4 +1,5 @@
 {Project} = require '../models'
+{Build, Project} = require '../models'
 
 {Error} = require 'mongoose'
 
@@ -40,6 +41,8 @@ module.exports = (app) ->
                 'data':
                     'name': req.project.name
                     'builds': builds
+                    'createAt': req.project.createdAt
+                    'updatedAt': req.project.updatedAt
             )
         .catch (err) ->
             console.error(err)
@@ -49,7 +52,7 @@ module.exports = (app) ->
             )
 
 
-    app.put '/projects/:project', (req, res) ->
+    app.put '/api/projects/:project', (req, res) ->
         # Updates an existing project's metadata, returning its slug (usually
         # the same but it might be modified)
         req.project.update(
@@ -75,7 +78,7 @@ module.exports = (app) ->
             )
 
 
-    app.delete '/projects/:project', (req, res) ->
+    app.delete '/api/projects/:project', (req, res) ->
         # Deletes a project, together with all of its builds and screenshots
         req.project.remove()
         .then ->

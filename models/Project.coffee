@@ -1,4 +1,5 @@
 assimilate = require '../services/assimilate'
+Build = require './Build'
 
 mongoose = require 'mongoose'
 uuid = require 'uuid'
@@ -50,6 +51,11 @@ Project.pre 'validate', (next) ->
     .catch (err) -> next(err)
 
 
+Project.method 'regenerate', ->
+    # generates a new API key
+    this.key = this.key = uuid.v4().replace(/-/g, '')
+
+
 Project.pre 'save', (next) ->
     this.updatedAt = new Date()
     if this.isNew
@@ -58,18 +64,14 @@ Project.pre 'save', (next) ->
 
 
 Project.pre 'remove', (next) ->
+    # Delete all builds before deleting this project
     Build.find(
-        'project': req.project.id
+        'project': this.id
     )
     .then (builds) ->
         builds.map (build) -> build.remove()
     .then -> next()
     .catch (err) -> next(err)
-
-
-Project.method 'regenerate', ->
-    # generates a new API key
-    this.key = this.key = uuid.v4().replace('-', '')
 
 
 module.exports = Model = assimilate mongoose.model('Project', Project)
