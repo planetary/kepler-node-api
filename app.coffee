@@ -1,16 +1,20 @@
 #!/usr/bin/env coffee
 config = require './config'
 
+mongoose = require 'mongoose'
 express = require 'express'
 
-# init express
-app = express()
+# connect to database
+mongoose.connect(config.mongo.uri, config.mongo.options)
+mongoose.connection.once 'open', ->
+    # init express
+    app = express()
 
-# load & init middlewares
-require('./middlewares')(app)
+    # load & init middlewares
+    require('./middlewares')(app)
 
-# load & init handlers
-require('./handlers')(app)
+    # load & init handlers
+    require('./handlers')(app)
 
-# start server
-app.listen(config.server.port)
+    # start server
+    app.listen(config.server.port)
