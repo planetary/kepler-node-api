@@ -15,6 +15,8 @@ s3 = new aws.S3(
 
 
 queue = async.queue((request, next) ->
+    # captures a screenshot of `request.url` and uploads it directly to the
+    # pre-configured AWS bucket under `request.key`. Concurrency-limited.
     async.auto({
         'phantom': (next) ->
             # spawn child process and feed it input
@@ -26,7 +28,7 @@ queue = async.queue((request, next) ->
             phantom.stdin.end(JSON.stringify(request))
 
             next(null, phantom)
-        'wait': ['spawn', (next, ctx) ->
+        'wait': ['phantom', (next, ctx) ->
             # wait for the process to end, helping it if necessary
             # http://bit.ly/1B4ToFb
             timer = setTimeout(
@@ -40,7 +42,7 @@ queue = async.queue((request, next) ->
                     next(new Error("Child process crashed with #{code}"))
                 next()
         ]
-        'upload': ['spawn', (next, ctx) ->
+        'upload': ['phantom', (next, ctx) ->
             s3.upload({
                 'ACL': 'public-read'
                 'Bucket': config.aws.bucket

@@ -70,7 +70,7 @@ module.exports = (app) ->
             if req.build
                 Screenshot.findOneAsync(
                     'project': req.project.id
-                    'build': req.build.id
+                    'build': req.build.number
                     'slug': value
                 )
                 .then (screenshot) ->

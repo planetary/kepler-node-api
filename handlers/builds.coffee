@@ -37,7 +37,7 @@ module.exports = (app) ->
     app.get '/api/projects/:project/:build', (req, res) ->
         # Returns the metadata associated with a build, including a list of all
         # available screenshots
-        Screenshot.find(
+        Screenshot.findASync(
             'project': req.project.id
             'build': req.build.number
         )
