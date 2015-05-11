@@ -40,3 +40,6 @@ class Build
     call: (method, endpoint, body) =>
         Promise.resolve(@number)
         .then (number) => @project.call(method, "/#{number}", body)
+
+
+module.exports = Build

@@ -1,7 +1,6 @@
 assimilate = require '../services/assimilate'
 config = require '../config'
 
-base32 = require 'base32'
 cryoto = require 'crypto'
 mongoose = require 'mongoose'
 url = require 'url'

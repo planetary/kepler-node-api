@@ -2,7 +2,7 @@
   "name": "Kepler",
   "version": "0.0.1",
   "description": "Screenshot service",
-  "author": "Radu Dan <dan@planetary.io>",
+  "author": "Planetary <team@planetary.io>",
   "repository": {
     "type": "git",
     "url": "https://github.com/planetary/kepler"
@@ -18,7 +18,6 @@
     "coffee-script": "^1.9.2",
     "deep-extend": "^0.4.0",
     "express": "^4.12.3",
-    "moment": "^2.9.0",
     "mongoose": "^4.0.2",
     "morgan": "^1.5.2",
     "nodemon": "^1.3.7",

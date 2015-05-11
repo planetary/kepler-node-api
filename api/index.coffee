@@ -6,8 +6,9 @@ Screenshot = require './Screenshot'
 
 
 module.exports =
-    'Build': build
+    'Build': Build
     'Connection': Connection
-    'KeplerError': KeplerError
+    'Error': KeplerError  # kepler.Errror
+    'KeplerError': KeplerError  # {KeplerError} = kepler
     'Project': Project
     'Screenshot': Screenshot

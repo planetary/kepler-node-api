@@ -37,3 +37,6 @@ class Connection
                     return reject(err)
 
                 resolve(body.data)
+
+
+module.exports = Connection

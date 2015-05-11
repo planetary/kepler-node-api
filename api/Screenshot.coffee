@@ -13,3 +13,6 @@ class Screenshot
     call: (method, endpoint, body) =>
         Promise.resolve(@slug)
         .then (slug) -> @build.call(method, "/{#{slug}", body)
+
+
+module.exports = Screenshot
