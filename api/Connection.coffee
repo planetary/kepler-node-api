@@ -14,8 +14,8 @@ class Connection
             'maxSockets': maxSockets or 5
         @timeout = socketTimeout or 20000
 
-    call: (method, endpoint, body, key=null) =>
-        new Promise(resolve, reject) =>
+    rpc: (method, endpoint, body, key=null) ->
+        new Promise (resolve, reject) =>
             options =
                 'url': "#{@url}/api#{endpoint}"
                 'method': method

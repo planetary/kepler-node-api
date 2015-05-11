@@ -14,13 +14,13 @@ class Project
             'versions': [{}]
             'delay': 0
 
-    build: (meta) =>
+    build: (meta) ->
         # Creates a new build in the current project
-        number = @call('POST', "", {'meta': meta})
-        Build(@, number)
+        number = @rpc('POST', '', {'meta': meta})
+        new Build(@, number)
 
-    call: (method, endpoint, body) =>
-        @connection.call(method, "/projects/#{@slug}", body, @apiKey)
+    rpc: (method, endpoint, body) ->
+        @conn.rpc(method, "/projects/#{@slug}", body, @apiKey)
 
 
 module.exports = Project

@@ -1,18 +1,19 @@
-Project = require './Project'
-Screnshot = require './Screenshot'
+Screenshot = require './Screenshot'
 
 Promise = require 'bluebird'
 
 
 class Build
     constructor: (project, number) ->
+        # circular import
+        Project = require './Project'
         if typeof project is 'object' and project not instanceof Project
             {project, number} = project
 
         @project = project
         @number = number
 
-    capture: (targetUrl, slug, meta, versions, delay) =>
+    capture: (targetUrl, slug, meta, versions, delay) ->
         # Take screenshots of `targetUrl` as part this build, storing as `slug`
         # r the sha1 of `targetUrl` if `slug` is not provided. Each member of
         # `versions` must be either the name of a well-known profile or a
@@ -34,12 +35,12 @@ class Build
             'versions': versions
             'delay': delay
 
-        slug = @call('POST', "", data)
+        slug = @rpc('POST', '', data)
         Screenshot(@project, @, slug)
 
-    call: (method, endpoint, body) =>
+    rpc: (method, endpoint, body) ->
         Promise.resolve(@number)
-        .then (number) => @project.call(method, "/#{number}", body)
+        .then (number) => @project.rpc(method, "/#{number}", body)
 
 
 module.exports = Build
