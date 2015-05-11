@@ -6,7 +6,7 @@ Promise = require 'bluebird'
 
 module.exports = (app) ->
     app.post '/api/projects', (req, res) ->
-        # Creates a new project, returning its slug
+        # Creates a new project, returning its slug and api key
         Project.createAsync(
             'name': req.body.name
             'meta': req.body.meta
@@ -15,7 +15,9 @@ module.exports = (app) ->
             res.status(201).send(
                 'code': 'OK'
                 'message': 'Created'
-                'data': project.slug
+                'data':
+                    'slug': project.slug
+                    'key': project.key
             )
         .catch Error.ValidationError, (err) ->
             res.status(400).send(
