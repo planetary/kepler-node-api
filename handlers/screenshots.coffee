@@ -1,10 +1,63 @@
+{Profile} = require '../models'
+
+{Error} = require 'mongoose'
+
+
 module.exports = (app) ->
     app.post '/api/projects/:project/:build', (req, res) ->
-        # Take screenshots of `URL` using `versions` as part of `build` of
-        # `project`, storing as `name` or the sha1 of `URL` if `name` is not
-        # provided. Each member of `versions` must be either the name of a
-        # well-known profile or a {width, agent} pair
-        res.status(501).send('Go away')
+        # Take screenshots of `target` after `delay` milliseconds, using the
+        # `versions` profiles as part of `build` of `project`, storing as
+        # `slug` or the sha1 of `target` if `slug` is not  provided, optionally
+        # binding it with `meta`. Each member of `versions` must be either the
+        # name of a well-known profile or a {width, agent} pair.
+        versions = []
+        for version in req.body.versions
+            if typeof version is 'string'
+                versions.push(
+                    'id': version
+                    'delay': req.body.delay or 0
+                )
+            else
+                versions.push(
+                    'agent': version.agent
+                    'width': version.width
+                    'delay': req.body.delay or 0
+                )
+
+        screenshot = new Screenshot(
+            'project': req.project.id,
+            'build': req.build.number
+            'slug': req.body.slug
+            'target': req.body.target
+            'meta': req.body.meta
+            'versions': versions
+        )
+        screenshot.validateAsync()
+        .then ->
+            # data looks okay; perform request in background...
+            screenshot.saveAsync()
+            .then -> console.log('Success')
+            .catch (err) -> console.error(err.stack)
+
+            # ... and inform the client that we'll do our best effort here
+            res.status(202).send(
+                'code': 'OK'
+                'message': 'Accepted'
+                'data': screenshot.slug
+            )
+
+        .catch Error.ValidationError, (err) ->
+            res.status(400).send(
+                'code': 'VALIDATION'
+                'message': err.message
+                'data': err.errors
+            )
+        .catch (err) ->
+            console.error(err)
+            res.status(500).send(
+                'code': 'INTERNAL'
+                'message': 'The server had an internal error'
+            )
 
 
     app.get '/api/projects/:project/:screenshot', (req, res) ->
@@ -44,9 +97,11 @@ module.exports = (app) ->
             'code': 'OK'
             'message': 'Success'
             'data':
-                'url': req.screenshot.url
+                'target': req.screenshot.target
                 'meta': req.screenshot.meta
                 'versions': [ver.id for ver in req.screenshots.versions]
+                'createdAt': req.project.createdAt
+                'updatedAt': req.project.updatedAt
         )
 
 
@@ -60,12 +115,9 @@ module.exports = (app) ->
                     'code': 'OK'
                     'message': 'Success'
                     'data':
-                        'viewport': version.viewport
+                        'width': version.width
                         'agent': version.agent
                         'delay': version.delay
-                        'width': version.width
-                        'height': version.height
-                        'size': version.size
                         'format': version.format
                         'url': req.screenshot.serve(version)
                 )

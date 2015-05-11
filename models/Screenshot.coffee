@@ -1,15 +1,21 @@
 assimilate = require '../services/assimilate'
 config = require '../config'
 
+base32 = require 'base32'
+cryoto = require 'crypto'
 mongoose = require 'mongoose'
+url = require 'url'
 
 
 ScreenshotVersion = mongoose.Schema({
     'id':
         # Either the name of the profile, or the sha1 hash of
-        # viewport + agent
+        # width + agent
         'type': String
         'required': true
+        'validate':
+            'validator': (val) -> val.match(/^[a-z0-9\-\.]+$/)
+            'msg': 'Versions must be lowercase and URL friendly'
 
     # The size of the viewport width in pixels that this screenshot was
     # rendered on (may be undefined / null if the default was used)
@@ -17,7 +23,7 @@ ScreenshotVersion = mongoose.Schema({
     # site does not scale correctly and creates a horizontal scrollbar (in
     # general, you want to fix such things as horizontal scrollbars cause a
     # bad user experience)
-    'viewport': Number
+    'width': Number
 
     # The user agent used to generate this screenshot (may be undefined /
     # null if the default was used)
@@ -30,26 +36,8 @@ ScreenshotVersion = mongoose.Schema({
         'min': 0
         'max': 5000
 
-    'width':
-        # The actual width of this screenshot, in pixels
-        'type': Number
-        'required': true
-        'min': 0
-
-    'height':
-        # The actual height of this screenshot, in pixels
-        'type': Number
-        'required': true
-        'min': 0
-
-    'size':
-        # The size of this screenshot, in bytes
-        'type': Number
-        'required': true
-        'min': 0
-
     'format':
-        # The format this screenshot is saved in
+        # The format this screenshot was saved in
         'type': String
         'required': true
         'enum': ['png', 'gif', 'jpeg']
@@ -59,7 +47,7 @@ ScreenshotVersion = mongoose.Schema({
 
 Screenshot = mongoose.Schema({
     'project':
-        # The project this build belongs to
+        # The project this group of screenshots belongs to
         'type': mongoose.Schema.Types.ObjectId
         'ref': 'Project'
         'required': true
@@ -71,20 +59,41 @@ Screenshot = mongoose.Schema({
 
     'slug':
         # The name of this group of screenshots; if not set by the user, the
-        # sha1 of the URL will be used
+        # sha1 of the target will be used
         'type': String
         'required': true
+        'validate': [
+            'validator': (val) -> val.match(/^[a-z0-9\-\.]+$/)
+            'msg': 'Slugs must be lowercase and URL friendly'
 
-    'url':
+            'validator': (val) -> val.match(/[^0-9]$/)
+            'msg': 'Slugs must contain at least one non-numeric character'
+        ]
+
+    'target':
         # The URL of the page that is rendered in this group of screenshots
         'type': String
         'required': true
+        'validate':
+            'validator': (val) ->
+                # this is a bit of a joke and not relied upon, but may prevent
+                # some rather common mistakes
+                pieces = url.parse(val)
+                if pieces.protocol not in ['http', 'https']
+                    return false
 
-    # All the versions available for this screenshot
-    'versions': [ScreenshotVersion]
+                if pieces.hostname in ['localhost', '127.0.0.1', '[127.0.0.1]'
+                                       '[::1]']
+                    return false
+
+                true
+            'msg': 'Only valid non-loopback HTTP(S) urls are supported'
 
     # api specified metadata, if any
     'meta': mongoose.Schema.Types.Mixed
+
+    # All the versions available for this screenshot
+    'versions': [ScreenshotVersion]
 
     'createdAt': Date
     'updatedAt': Date
@@ -92,11 +101,36 @@ Screenshot = mongoose.Schema({
 
 
 Screenshot.method 'serve', (version) ->
-    if typeof(version) is 'object'
+    if typeof version is 'object'
         version = version.id
-    project = if typeof(@project) is 'object' then @project.id else @project
+    project = if typeof @project is 'object' then @project.id else @project
     "https://#{config.aws.bucket}.s3.amazonaws.com/#{project}-#{@build}-
     #{@slug}-#{version}"
+
+
+Screenshot.pre 'validate', (next) ->
+    if @isNew
+        if not @slug
+            # Auto generate slug if not present
+            hash = crypto.createHash('sha1')
+            hash.update(@target)
+            @slug = hash.digest('base64').replace('+', '-').replace('/', '.')
+                .toLowerCase()
+                .substring(0, 8)
+
+            if @slug.match(/^[0-9]+$/)
+                # one in a million chance; avoid collision with build numbers
+                @slug = @slug.substring(0, 4) + '-' + @slug.substring(4)
+
+        for version in @versions
+            # Auto-generate version id if not present
+            if not version.id
+                hash = crypto.createHash('sha1')
+                hash.update((@width or '') + (@agent or ''))
+                @id = hash.digest('base64').replace('+', '-').replace('/', '.')
+                    .toLowerCase()
+                    .substring(0, 8)
+
 
 
 Screenshot.pre 'save', (next) ->

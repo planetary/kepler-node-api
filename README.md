@@ -15,13 +15,4 @@ Screenshot service
 * `gulp build`
 
 ## Serve Locally
-* gulp
-
-### OSX Cheatsheet
-
-#### mongo
-```bash
-brew install mongodb &&
-ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgents &&
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
-```
+* `gulp`
