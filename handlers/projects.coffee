@@ -7,6 +7,11 @@ Promise = require 'bluebird'
 module.exports = (app) ->
     app.post '/api/projects', (req, res) ->
         # Creates a new project, returning its slug and api key
+        if req.ip not in ['127.0.0.1', '::ffff:127.0.0.1', '::1']
+            return res.status(400).send(
+                'code': 'ACCESS_DENIED'
+                'message': 'Only localhost may create projects'
+            )
         Project.createAsync(
             'name': req.body.name
             'meta': req.body.meta
