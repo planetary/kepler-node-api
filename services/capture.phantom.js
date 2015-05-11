@@ -13,7 +13,7 @@ if ( config.width )
 if ( config.agent )
     page.settings.userAgent = config.agent;
 
-page.open( config.url, function() {
+page.open( config.target, function() {
     window.setTimeout( function () {
         system.stdout.write(page.renderBase64(config.format));
         phantom.exit();

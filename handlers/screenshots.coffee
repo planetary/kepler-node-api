@@ -1,4 +1,4 @@
-{Profile} = require '../models'
+{Profile, Screenshot} = require '../models'
 
 {Error} = require 'mongoose'
 
@@ -15,13 +15,11 @@ module.exports = (app) ->
             if typeof version is 'string'
                 versions.push(
                     'id': version
-                    'delay': req.body.delay or 0
                 )
             else
                 versions.push(
                     'agent': version.agent
                     'width': version.width
-                    'delay': req.body.delay or 0
                 )
 
         screenshot = new Screenshot(
@@ -29,6 +27,8 @@ module.exports = (app) ->
             'build': req.build.number
             'slug': req.body.slug
             'target': req.body.target
+            'delay': req.body.delay or 0
+            'format': req.body.format or 'jpeg'
             'meta': req.body.meta
             'versions': versions
         )
@@ -67,12 +67,12 @@ module.exports = (app) ->
         versions = {}
         for screenshot in req.screenshots
             for version in screenshot.versions
-                versions[version] = true
+                versions[version.id] = true
 
         res.status(200).send(
             'code': 'OK'
             'message': 'Success'
-            'data': [version for version of versions]
+            'data': version for version of versions
         )
 
 
@@ -82,13 +82,13 @@ module.exports = (app) ->
         builds = {}
         for screenshot in req.screenshots
             for version in screenshot.versions
-                if version is req.param.version
+                if version.id is req.params.version
                     builds[screenshot.build] = true
 
         res.status(200).send(
             'code': 'OK'
             'message': 'Success'
-            'data': [build for build of builds]
+            'data': Number(build) for build of builds
         )
 
 
@@ -100,8 +100,10 @@ module.exports = (app) ->
             'message': 'Success'
             'data':
                 'target': req.screenshot.target
+                'delay': req.screenshot.delay
+                'format': req.screenshot.format
                 'meta': req.screenshot.meta
-                'versions': [ver.id for ver in req.screenshots.versions]
+                'versions': ver.id for ver in req.screenshots.versions
                 'createdAt': req.project.createdAt
                 'updatedAt': req.project.updatedAt
         )
@@ -112,15 +114,13 @@ module.exports = (app) ->
         # particular build of a screenshot, including the S3 URL needed to
         # display the resource
         for version in req.screenshot.versions
-            if version.id is req.param.version
+            if version.id is req.params.version
                 return res.status(200).send(
                     'code': 'OK'
                     'message': 'Success'
                     'data':
                         'width': version.width
                         'agent': version.agent
-                        'delay': version.delay
-                        'format': version.format
                         'url': req.screenshot.serve(version)
                 )
 
@@ -128,5 +128,5 @@ module.exports = (app) ->
         res.status(404).send(
             'code': 'NOT_FOUND'
             'message': "Screenshot #{req.screenshot.slug} does not have a
-                        #{req.param.version} version"
+                        #{req.params.version} version"
         )

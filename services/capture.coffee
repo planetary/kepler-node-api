@@ -2,10 +2,10 @@ config = require '../config'
 
 async = require 'async'
 aws = require 'aws-sdk'
+Promise = require 'bluebird'
 base64 = require 'base64-stream'
 child = require 'child_process'
 path = require 'path'
-Promise = require 'bluebird'
 
 
 s3 = new aws.S3(
@@ -37,7 +37,7 @@ queue = async.queue((request, next) ->
             )
 
             ctx.phantom.on 'close', (code) ->
-                timer.clearTimeout()
+                clearTimeout(timer)
                 if code
                     next(new Error("Child process crashed with #{code}"))
                 next()
@@ -47,7 +47,7 @@ queue = async.queue((request, next) ->
                 'ACL': 'public-read'
                 'Bucket': config.aws.bucket
                 'Key': request.key
-                'Body': phantom.stdout.pipe(base64.decode())
+                'Body': ctx.phantom.stdout.pipe(base64.decode())
                 'ContentType': "image/#{request.format}"
                 'StorageClass': if config.aws.reliable then 'STANDARD'\
                                 else 'REDUCED_REDUNDANCY'
@@ -57,4 +57,9 @@ queue = async.queue((request, next) ->
 , config.screenshots.concurrency)
 
 
-module.exports = queue.push.bind(queue)
+module.exports = (request) ->
+    new Promise (resolve, reject) ->
+        queue.push request, (err, result) ->
+            if err
+                return reject(err)
+            resolve()
