@@ -37,7 +37,9 @@ Project.pre 'validate', (next) ->
     if @isNew
         @regenerate()
 
-    base = @slug = @name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    base = @name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    if not @slug
+        @slug = base
 
     trySlug = (model) =>
         Model.findOneAsync(
@@ -46,9 +48,11 @@ Project.pre 'validate', (next) ->
         .then (project) =>
             if project and project.id isnt @id
                 # already exists; generate a new suffix
-                rand = Math.floor(65536 * Math.random())
-                @slug = base + '-' + rand.toString(16)
+                rand = Math.floor(1679616 * Math.random())
+                @slug = base + '-' + rand.toString(36)
                 trySlug()
+
+    # enforce slug uniqueness
     trySlug()
     .then -> next()
     .catch (err) -> next(err)
