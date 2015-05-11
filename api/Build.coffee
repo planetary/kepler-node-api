@@ -18,8 +18,6 @@ class Build
         # r the sha1 of `targetUrl` if `slug` is not provided. Each member of
         # `versions` must be either the name of a well-known profile or a
         # {width, agent} pair, optionally binding it with `meta`
-        #
-        # Will replace any existing screenshot groups using the same slug
         if typeof targetUrl is 'object' and targetUrl not instanceof String
             {targetUrl, slug, meta, versions, delay} = targetUrl
 
@@ -40,7 +38,7 @@ class Build
 
     rpc: (method, endpoint, body) ->
         Promise.resolve(@number)
-        .then (number) => @project.rpc(method, "/#{number}", body)
+        .then (number) => @project.rpc(method, "/#{number}#{endpoint}", body)
 
 
 module.exports = Build

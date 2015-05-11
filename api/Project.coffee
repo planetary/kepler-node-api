@@ -20,7 +20,7 @@ class Project
         new Build(@, number)
 
     rpc: (method, endpoint, body) ->
-        @conn.rpc(method, "/projects/#{@slug}", body, @apiKey)
+        @conn.rpc(method, "/projects/#{@slug}#{endpoint}", body, @apiKey)
 
 
 module.exports = Project

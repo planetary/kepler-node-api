@@ -11,7 +11,7 @@ class Screenshot
 
     rpc: (method, endpoint, body) ->
         Promise.resolve(@slug)
-        .then (slug) -> @build.rpc(method, "/{#{slug}", body)
+        .then (slug) -> @build.rpc(method, "/{#{slug}#{endpoint}", body)
 
 
 module.exports = Screenshot
