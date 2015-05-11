@@ -31,12 +31,12 @@ load(__dirname)
 # if the NODE_ENV shell variable exists and points to a valid subfolder,
 # attempt to overwrite any global configuration options with their
 # per-environment values
-if process.env.NODE_ENV
+if process.env.NODE_ENV and process.env.NODE_ENV isnt 'development'
     envName = process.env.NODE_ENV
     envPath = path.join(__dirname, envName)
 
     stat = fs.statSync(envPath)
-    if not stat.isDirectory()
+    if stat.isDirectory()
         load(envPath)
     else
         console.warn('Invalid environment provided: ' + envName)
