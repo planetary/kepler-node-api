@@ -27,7 +27,7 @@ exports.up = function(next) {
             'width': 2560,
             'agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A'
         }, {
-            'name': 'mbp',
+            'name': 'macbook',
             'width': 1440,
             'agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A'
         }, {

@@ -10,6 +10,9 @@ class Project
         @conn = conn
         @slug = projectSlug
         @apiKey = apiKey
+        @defaults =
+            'versions': [{}]
+            'delay': 0
 
     build: (meta) =>
         # Creates a new build in the current project
