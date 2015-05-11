@@ -23,7 +23,7 @@ module.exports = (app) ->
                 'data': err.errors
             )
         .catch (err) ->
-            console.error(err)
+            console.error(err.stack)
             res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
@@ -40,7 +40,7 @@ module.exports = (app) ->
                 'data': profile.name for profile in profiles
             )
         .catch (err) ->
-            console.error(err)
+            console.error(err.stack)
             res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
@@ -66,7 +66,7 @@ module.exports = (app) ->
                 'data': err.errors
             )
         .catch (err) ->
-            console.error(err)
+            console.error(err.stack)
             res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
@@ -83,7 +83,7 @@ module.exports = (app) ->
                 'message': 'Deleted'
             )
         .catch (err) ->
-            console.error(err)
+            console.error(err.stack)
             res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'

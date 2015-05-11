@@ -36,8 +36,10 @@ module.exports = (app) ->
         .then ->
             # data looks okay; perform request in background...
             screenshot.saveAsync()
-            .then -> console.log('Success')
-            .catch (err) -> console.error(err.stack)
+            .then ->
+                console.log('Success')
+            .catch (err) ->
+                console.error(err.stack)
 
             # ... and inform the client that we'll do our best effort here
             res.status(202).send(
@@ -53,7 +55,7 @@ module.exports = (app) ->
                 'data': err.errors
             )
         .catch (err) ->
-            console.error(err)
+            console.error(err.stack)
             res.status(500).send(
                 'code': 'INTERNAL'
                 'message': 'The server had an internal error'
