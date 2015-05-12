@@ -16,7 +16,7 @@
   },
   "main": "lib",
   "scripts": {
-    "prepublish": "coffee -c src -o lib"
+    "prepublish": "coffee -o lib -c src"
   },
   "license": "MIT",
   "devDependencies": {

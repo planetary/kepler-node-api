@@ -3,11 +3,13 @@ Connection = require './Connection'
 
 
 class Project
-    constructor: (conn, projectSlug, apiKey, screenshotDefaults) ->
-        if typeof conn is 'object' and conn not instanceof Connection
-            {conn, projectSlug, apiKey} = apiUrl
+    constructor: (connection, projectSlug, apiKey, screenshotDefaults) ->
+        if \
+                typeof connection is 'object' and \
+                connection not instanceof Connection
+            {connection, projectSlug, apiKey, screenshotDefaults} = connection
 
-        @conn = conn
+        @connection = connection
         @slug = projectSlug
         @apiKey = apiKey
         @defaults = screenshotDefaults or
@@ -41,7 +43,7 @@ class Project
         new Build(@, number)
 
     rpc: (method, endpoint, body) ->
-        @conn.rpc(method, "/projects/#{@slug}#{endpoint}", body, @apiKey)
+        @connection.rpc(method, "/projects/#{@slug}#{endpoint}", body, @apiKey)
 
 
 module.exports = Project

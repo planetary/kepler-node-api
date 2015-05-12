@@ -32,7 +32,7 @@ class Build
 
     capture: (targetUrl, slug, meta, versions, delay) ->
         # Take screenshots of `targetUrl` as part this build, storing as `slug`
-        # r the sha1 of `targetUrl` if `slug` is not provided. Each member of
+        # or the sha1 of `targetUrl` if `slug` is not provided. Each member of
         # `versions` must be either the name of a well-known profile or a
         # {width, agent} pair, optionally binding it with `meta`
         if typeof targetUrl is 'object' and targetUrl not instanceof String
