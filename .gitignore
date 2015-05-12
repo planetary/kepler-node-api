@@ -2,6 +2,9 @@
 .migrate
 .migrate-development
 
+# compiled javascript files
+lib/*
+
 # node libraries
 node_modules
 

@@ -16,9 +16,14 @@ kepler = require('kepler-api')
 kepler.configure({
     'apiUrl': 'http://your-kepler-server',
     'projectSlug': 'your-project-slug',
-    'apiKey': 'your-api-key'
-    'build': 'build-number-or-blank-for-new-build'
+    'apiKey': 'your-api-key',
+    'screenshotDefaults': {
+        'versions': ['iphone-portrait', 'ipad-portrait', '1080p']
+    }
 })
+
+
+kepler.capture('http://your-website-here/a-random-page', )
 ```
 
 ## API Reference

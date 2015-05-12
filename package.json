@@ -14,5 +14,12 @@
     "bluebird": "^2.9.25",
     "request": "^2.55.0"
   },
-  "license": "MIT"
+  "main": "lib",
+  "scripts": {
+    "prepublish": "coffee -c src -o lib"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "coffee-script": "^1.9.2"
+  }
 }
