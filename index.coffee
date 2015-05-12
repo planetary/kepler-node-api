@@ -1,8 +1,8 @@
-Build = require './Build'
-Connection = require './Connection'
-KeplerError = require './Error'
-Project = require './Project'
-Screenshot = require './Screenshot'
+Build = require './lib/Build'
+Connection = require './lib/Connection'
+KeplerError = require './lib/Error'
+Project = require './lib/Project'
+Screenshot = require './lib/Screenshot'
 
 
 module.exports =

@@ -3,14 +3,14 @@ Connection = require './Connection'
 
 
 class Project
-    constructor: (conn, projectSlug, apiKey) ->
+    constructor: (conn, projectSlug, apiKey, screenshotDefaults) ->
         if typeof conn is 'object' and conn not instanceof Connection
             {conn, projectSlug, apiKey} = apiUrl
 
         @conn = conn
         @slug = projectSlug
         @apiKey = apiKey
-        @defaults =
+        @defaults = screenshotDefaults or
             'versions': [{}]
             'delay': 0
 
