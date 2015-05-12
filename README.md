@@ -1,21 +1,26 @@
-# Kepler
+# Kepler-NodeJS-API
 
-Screenshot service
+Screenshot service (nodejs API)
 
-## Dependencies
+## Install
 
-* NodeJS
-* MongoDB
-* PhantomJS
-* AWS bucket
+```bash
+npm install --save kepler-api
+```
 
-## Installation
-* `sudo npm install -g gulp migrate`
-* `npm install`
-* `migrate up`
+## Usage
 
-## Serve Locally
-* `gulp`
+```javascript
+kepler = require('kepler-api')
 
-## Create project
-* `gulp create-project --name="your project name"`
+kepler.configure({
+    'apiUrl': 'http://your-kepler-server',
+    'projectSlug': 'your-project-slug',
+    'apiKey': 'your-api-key'
+    'build': 'build-number-or-blank-for-new-build'
+})
+```
+
+## API Reference
+
+TODO: write this
