@@ -10,9 +10,12 @@ Screenshot service
 * AWS bucket
 
 ## Installation
-* `sudo npm install -g gulp migrate mocha`
+* `sudo npm install -g gulp migrate`
 * `npm install`
-* `gulp build`
+* `migrate up`
 
 ## Serve Locally
 * `gulp`
+
+## Create project
+* `gulp create-project --name="your project name"`
