@@ -1,6 +1,6 @@
 # Kepler-NodeJS-API
 
-Screenshot service (nodejs API)
+Nodejs API for [Kepler](https://github.com/planetary/kepler)
 
 ## Install
 
@@ -19,11 +19,12 @@ kepler.configure({
     'apiKey': 'your-api-key',
     'screenshotDefaults': {
         'versions': ['iphone-portrait', 'ipad-portrait', '1080p']
+        'delay': 0
     }
 })
 
 
-kepler.capture('http://your-website-here/a-random-page', )
+kepler.capture('http://your-website-here/a-random-page', 'page-name-here')
 ```
 
 ## API Reference

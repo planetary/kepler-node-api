@@ -1,6 +1,6 @@
 {
-  "name": "Kepler-Node-API",
-  "version": "0.0.1",
+  "name": "kepler-api",
+  "version": "0.0.2",
   "description": "Screenshot service API",
   "author": "Planetary <team@planetary.io>",
   "repository": {
