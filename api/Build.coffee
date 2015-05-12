@@ -13,6 +13,23 @@ class Build
         @project = project
         @number = number
 
+    get: ->
+        # promises to return this builds's metadata including a list of all
+        # known screenshots
+        @rpc('GET', '')
+        .then (build) =>
+            build.screenshots = new Screenshot(@, slug) \
+                                for slug in build.screenshots
+            build
+
+    set: (meta) ->
+        # promises to update this builds's metadata
+        @rpc('PUT', '', {'meta': meta})
+
+    remove: ->
+        # promises to remove this build together with all of its screenshots
+        @rpc('DELETE', '')
+
     capture: (targetUrl, slug, meta, versions, delay) ->
         # Take screenshots of `targetUrl` as part this build, storing as `slug`
         # r the sha1 of `targetUrl` if `slug` is not provided. Each member of

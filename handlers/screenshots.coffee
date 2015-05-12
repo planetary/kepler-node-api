@@ -109,6 +109,31 @@ module.exports = (app) ->
         )
 
 
+    app.put '/api/projects/:project/:build/:screenshot', (req, res) ->
+        # Updates the metadata associated with this screenshot in this
+        # particular build
+        req.screenshot.updateAsync(
+            'meta': req.body.meta
+        )
+        .then ->
+            res.status(200).send(
+                'code': 'OK'
+                'message': 'Saved'
+            )
+        .catch Error.ValidationError, (err) ->
+            res.status(400).send(
+                'code': 'VALIDATION'
+                'message': err.message
+                'data': err.errors
+            )
+        .catch (err) ->
+            console.error(err.stack)
+            res.status(500).send(
+                'code': 'INTERNAL'
+                'message': 'The server had an internal error'
+            )
+
+
     app.get '/api/projects/:project/:build/:screenshot/:version', (req, res) ->
         # Returns the metadata associated with a particular version of a
         # particular build of a screenshot, including the S3 URL needed to
