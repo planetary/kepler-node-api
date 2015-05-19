@@ -1,8 +1,12 @@
 {
   "name": "kepler-api",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Screenshot service API",
+  "keywords": ["screenshot", "api", "phantom", "phantomjs"],
   "author": "Planetary <team@planetary.io>",
+  "contributors": [
+    "Radu Dan <dan@planetary.io> (https://github.com/za-creature)"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/planetary/kepler-node-api"
@@ -10,16 +14,23 @@
   "bugs": {
     "url": "https://github.com/planetary/kepler-node-api/issues"
   },
+  "homepage": "https://github.com/planetary/kepler-node-api",
   "dependencies": {
     "bluebird": "^2.9.25",
     "request": "^2.55.0"
   },
+  "devDependencies": {
+    "coffee-script": "^1.9.2"
+  },
+  "engines": {
+    "npm": "*",
+    "node": "*",
+    "coffee-script": "1.9.2"
+  },
   "main": "lib",
+  "files": ["lib"],
   "scripts": {
     "prepublish": "coffee -o lib -c src"
   },
-  "license": "MIT",
-  "devDependencies": {
-    "coffee-script": "^1.9.2"
-  }
+  "license": "MIT"
 }
