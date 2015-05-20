@@ -1,6 +1,10 @@
 Screenshot = require './Screenshot'
+TunnelManager = require './TunnelManager'
 
 Promise = require 'bluebird'
+dns = require 'dns'
+ip = require 'ip'
+url = require 'url'
 
 
 class Build
@@ -43,15 +47,46 @@ class Build
         if typeof delay is 'undefined'
             delay = @project.defaults.delay
 
-        data =
-            'slug': slug
-            'target': targetUrl
-            'meta': meta
-            'versions': versions
-            'delay': delay
+        pieces = url.parse(targetUrl)
+        if pieces.protocol not in ['http:', 'https:']
+            throw new Error('Only http(s) supported')
 
-        slug = @rpc('POST', '', data)
-        Screenshot(@project, @, slug)
+        actualSlug = Promise.fromNode (next) ->
+            # figure if targetUrl points to a non-routable ip
+            dns.lookup(pieces.hostname, next)
+        .spread (address, family) ->
+            if ip.isPrivate(address)
+                # looks like targetUrl points somewhere to a private network
+                # set up a public tunnel via this machine
+                if not pieces.port
+                    if pieces.protocol is 'http:'
+                        pieces.port = 80
+                    else
+                        pieces.port = 443
+
+                TunnelManager.open(pieces.hostname, pieces.port)
+                .then (tunnel) ->
+                    tunnelPieces = url.parse(tunnel)
+                    for key in ['protocol', 'host', 'port', 'hostname']
+                        pieces[key] = tunnelPieces[key]
+                    url.format(pieces)
+            else
+                # targetUrl is bound to a routable ip; barring net splits, the
+                # kepler webservice should be able to connect to it directly
+                targetUrl
+        .then (target) =>
+            data =
+                'slug': slug
+                'target': target
+                'meta': meta
+                'versions': versions
+                'delay': delay
+
+            @rpc('POST', '', data)
+        .finally ->
+            TunnelManager.close(pieces.hostname, pieces.port)
+
+        Screenshot(@project, @, actualSlug)
 
     rpc: (method, endpoint, body) ->
         Promise.resolve(@number)
