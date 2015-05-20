@@ -19,7 +19,7 @@ configure = (properties) ->
     if properties.buildNumber
         build = new Build(project, properties.buildNumber)
     else
-        build = project.build()
+        build = project.build(properties.buildMeta)
 
 
 module.exports =
