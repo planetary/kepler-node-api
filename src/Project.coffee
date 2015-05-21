@@ -13,7 +13,7 @@ class Project
         @slug = projectSlug
         @apiKey = apiKey
         @defaults = screenshotDefaults or
-            'versions': [{}]
+            'profiles': [{}]
             'delay': 0
 
     get: ->

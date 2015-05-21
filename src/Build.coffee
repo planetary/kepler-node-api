@@ -34,16 +34,16 @@ class Build
         # promises to remove this build together with all of its screenshots
         @rpc('DELETE', '')
 
-    capture: (targetUrl, slug, meta, versions, delay) ->
+    capture: (targetUrl, slug, meta, profiles, delay) ->
         # Take screenshots of `targetUrl` as part this build, storing as `slug`
         # or the sha1 of `targetUrl` if `slug` is not provided. Each member of
-        # `versions` must be either the name of a well-known profile or a
+        # `profiles` must be either the name of a well-known profile or a
         # {width, agent} pair, optionally binding it with `meta`
         if typeof targetUrl is 'object' and targetUrl not instanceof String
-            {targetUrl, slug, meta, versions, delay} = targetUrl
+            {targetUrl, slug, meta, profiles, delay} = targetUrl
 
-        if typeof versions is 'undefined'
-            versions = @project.defaults.versions
+        if typeof profiles is 'undefined'
+            profiles = @project.defaults.profiles
         if typeof delay is 'undefined'
             delay = @project.defaults.delay
 
@@ -79,7 +79,7 @@ class Build
                 'slug': slug
                 'target': target
                 'meta': meta
-                'versions': versions
+                'profiles': profiles
                 'delay': delay
 
             @rpc('POST', '', data)

@@ -18,7 +18,7 @@ kepler.configure({
     'projectSlug': 'your-project-slug',
     'apiKey': 'your-api-key',
     'screenshotDefaults': {
-        'versions': ['iphone-portrait', 'ipad-portrait', '1080p']
+        'profiles': ['iphone-portrait', 'ipad-portrait', '1080p']
         'delay': 0
     }
 })

@@ -11,7 +11,7 @@ class Screenshot
 
     get: ->
         # promises to return this screenshot's metadata including a list of all
-        # known versions
+        # known profiles
         @rpc('GET', '')
 
     set: (meta) ->
@@ -19,7 +19,7 @@ class Screenshot
         @rpc('PUT', '', {'meta': meta})
 
     remove: ->
-        # promises to remove this screenshot with all of its versions
+        # promises to remove this screenshot with all of its profiles
         @rpc('DELETE', '')
 
     rpc: (method, endpoint, body) ->
